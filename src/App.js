@@ -8,7 +8,7 @@ import defaultPicture from './components/img/default.jpg'
 
 const Materialize = window.Materialize
 
-const APP_TITLE = 'Awesome App'
+const APP_TITLE = 'Love Calculator'
 //update document title (displayed in the opened browser tab)
 document.title = APP_TITLE
 
@@ -31,9 +31,11 @@ class App extends Component {
     }
 
 
+
     render() {
         return (
-            <div className="App">
+          <body>
+            <div className="App" >
                 <div className="App-header">
                     <h1>{ APP_TITLE }</h1>
                     <img src={ logo } className="App-logo" alt="logo" />
@@ -46,27 +48,30 @@ class App extends Component {
 
                             <div className="row" style={ { marginBottom: 0 } }>
                                 <div className="input-field col s6 offset-s3">
-                                    <input id="cityInput" type="text" value={ this.state.city } onChange={ this.handleChange } />
-                                    <label htmlFor="cityInput">City</label>
+                                <input id="fname" type="text" placeholder = "John"/>
+                                <input id="sname" type="text" placeholder = "Alice" />
+
                                 </div>
                             </div>
 
                             <button type="submit" className="waves-effect waves-light btn">
-                                Weather?
+                                Match ?
                             </button>
 
                         </form>
 
                     </div>
 
+                <center>
                     <div className="row" style={ { marginTop: 20 } } >
-                        <div className="col s12 m6 offset-m3">
-                            { this.displayWeatherInfo() }
-                        </div>
+                    <p id="percentage"> </p>
+                    <p id="result"> </p>
                     </div>
+                </center>
                 </div>
 
             </div>
+            </body>
         )
     }
 
@@ -106,18 +111,59 @@ class App extends Component {
             }
             //handling error
             else {
-                console.log( weather )
+              /*console.log( weather )
                 //weather will contain an error object (see APIXU DOCUMENTATION)
                 Materialize.toast( weather.error.message, 8000, 'error-toast' )
-                //Using Materialize toast component to display error messages - see http://materializecss.com/dialogs.html
+                //Using Materialize toast component to display error messages - see http://materializecss.com/dialogs.html*/
             }
 
 
         }
         catch ( error ) {
-            Materialize.toast( error, 8000, 'error-toast' )
-            console.log( 'Failed fetching data: ', error )
+          /*  Materialize.toast( error, 8000, 'error-toast' )
+            console.log( 'Failed fetching data: ', error )*/
         }
+
+        var fname = '';
+        var sname = '';
+
+        if (document.getElementById("fname").value.length == 0 || document.getElementById("sname").value.length == 0 ) {
+
+          document.getElementById("fname").value = "John";
+          document.getElementById("sname").value = "Alice";
+
+
+
+        }
+
+
+          fname = document.getElementById("fname").value;
+          sname = document.getElementById("sname").value;
+          document.body.style.backgroundImage = "url('http://www.cqsisu.com/WDF-1496000.html')";
+
+
+
+
+
+
+        var request = require('request-promise');
+
+        var options = {
+          headers: {'X-Mashape-Key':'xYA85CJgEWmshLyBMTshk3cX8gDip16ocuGjsnn1IKYXwWgjMR'},
+          url: 'https://love-calculator.p.mashape.com/getPercentage?fname='+fname+'&sname= '+sname+'',
+          dataType:'json',
+          type:'GET',
+        };
+
+        request.get(options).then(function(body){
+var json = JSON.parse(body);
+console.log(json);
+
+document.getElementById("percentage").innerHTML = json.fname +" and " + json.sname +" has a " + json.percentage+ " compatibility percentage " ;
+
+document.getElementById("result").innerHTML = json.result;
+
+        });
 
     }
 
@@ -164,7 +210,7 @@ class App extends Component {
 
         /*
             DATA FORMAT SENT BY THE API LOKKS LIKE THIS :
-    
+
             {
                 "pixabayPicture": string, //CUSTOM ADD VIA PIXABAY API CALL
                 "location": {
@@ -187,7 +233,7 @@ class App extends Component {
                     "wind_kph": number
                 }
             }
-    
+
         */
 
         if ( weather ) {
@@ -210,7 +256,7 @@ class App extends Component {
             )
         }
 
-        return null
+
     }
 
 }
